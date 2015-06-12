@@ -2,11 +2,15 @@
 
 #include "queue.h"
 
-void swap(int* a, int* b)
+void test_queue()
 {
-    (*a) = (*a)^(*b);
-    (*b) = (*a)^(*b);
-    (*a) = (*a)^(*b);
+    int i;
+    Tree *top;
+    for (i = 0; i < ALPHABET_SIZE; ++i)
+    {
+        top = get_top();
+        printf("guy no. %d in the queue is %c \n", i+1, top->val);
+    }
 }
 
 int main()
@@ -33,6 +37,7 @@ int main()
             printf("char no. %d which is %c has freq: %d \n", i, i, freq[i]);
 
     init_queue(freq);
+    test_queue();
 
     fclose(fp);
 }
