@@ -16,7 +16,7 @@ void fill_one_char_entry(Data *the_place, char c, int freq)
     the_place->tree->val = c;
 }
 
-void swap(int *a, int *b)
+void do_swap(int *a, int *b)
 {
     (*a) = (*a)^(*b);
     (*b) = (*a)^(*b);
@@ -25,7 +25,8 @@ void swap(int *a, int *b)
 
 void swap_data_node(Data *a, Data *b)
 {
-    swap(&(a->freq), &(b->freq));
+    do_swap(&(a->freq), &(b->freq));
+    do_swap((int *) &(a->tree), (int *) &(b->tree));
 }
 
 
@@ -38,8 +39,9 @@ void heapify(i)
         biggest = left;
     if ((right < how_much_in_q) && (data[right].freq > data[biggest].freq))
         biggest = right;
-    if (i != largest)
+    if (i != biggest)
     {
+        swap_data_node(&data[i], &data[biggest]);
         //swap(&(A[i]), &(A[largest]));
         //NOPE swap DATAZZZ
         // heapify(largest);
