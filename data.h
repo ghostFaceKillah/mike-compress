@@ -1,4 +1,4 @@
-typedef struct Tree{
+typedef struct Tree {
     char val;
     struct Tree *l;
     struct Tree *r;

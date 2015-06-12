@@ -1,12 +1,13 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <assert.h>
 
 #include "queue.h"
 
 
-static int how_much_in_q;
-static Data data[ALPHABET_SIZE] = {0};
+static int last_elem_index = 1;
+static Data data[ALPHABET_SIZE + 1] = {0};
 
 void fill_one_char_entry(Data *the_place, char c, int freq)
 {
@@ -16,52 +17,92 @@ void fill_one_char_entry(Data *the_place, char c, int freq)
     the_place->tree->val = c;
 }
 
-void do_swap(int *a, int *b)
+void swap_int(int *a, int *b)
 {
+    assert(a != b);
     (*a) = (*a)^(*b);
     (*b) = (*a)^(*b);
     (*a) = (*a)^(*b);
 }
 
-void swap_data_node(Data *a, Data *b)
+void swap(Data *a, Data *b)
 {
-    do_swap(&(a->freq), &(b->freq));
-    do_swap((int *) &(a->tree), (int *) &(b->tree));
+    assert(a != b);
+    swap_int(&(a->freq), &(b->freq));
+    swap_int((int *) &(a->tree), (int *) &(b->tree));
+    // int temp_freq = a->freq;
+    // Tree *temp_tree = a->tree;
+    // a->tree = b->tree;
+    // a->freq = b->freq;
+    // b->tree = temp_tree;
+    // b->freq = temp_freq;
 }
 
-
-void heapify(i)
+void heapify(int i)
 {
-    int left = 2i;
-    int right = 2i+1;
+    assert(i > 0);
+    assert(data[i].tree != NULL);
+    int left = 2*i;
+    int right = 2*i + 1;
     int biggest = i;
-    if ((left < how_much_in_q) && (data[left].freq > data[biggest].freq))
+    if ((left <= last_elem_index) && (data[left].freq < data[biggest].freq))
         biggest = left;
-    if ((right < how_much_in_q) && (data[right].freq > data[biggest].freq))
+    if ((right <= last_elem_index) && (data[right].freq < data[biggest].freq))
         biggest = right;
     if (i != biggest)
     {
-        swap_data_node(&data[i], &data[biggest]);
-        //swap(&(A[i]), &(A[largest]));
-        //NOPE swap DATAZZZ
-        // heapify(largest);
+        assert(i != 0);
+        assert(biggest != 0);
+        swap(&(data[i]), &(data[biggest]));
+        heapify(biggest);
     }
 }
+
 
 void init_queue(int freq[ALPHABET_SIZE])
 {
     int i;
     // copy the data in
     for (i = 0; i < ALPHABET_SIZE; ++i)
-        fill_one_char_entry(&(data[i]), (char) i, freq[i]);
-    how_much_in_q = ALPHABET_SIZE;
+        fill_one_char_entry(&(data[i+1]), (char) i, freq[i]);
+    last_elem_index = ALPHABET_SIZE;
     // heapify
-    for (i = ALPHABET_SIZE/2; i >= 0; --i)
+    for (i = last_elem_index/2; i > 0; --i)
         heapify(i);
 }
 
-void add_elem(Data *d)
+void add_elem(int freq, Tree *tree)
 {
-    how_much_in_q++;
-    printf("%d\n", how_much_in_q);
+    last_elem_index++;
+    // static Data data[ALPHABET_SIZE] = {0};
+    data[last_elem_index].freq = freq;
+    data[last_elem_index].tree = tree;
+    int i;
+    for (i = last_elem_index / 2; i > 0; i /= 2)
+        heapify(i);
+
+}
+
+Tree *get_top()
+{
+    assert(last_elem_index >= 1);
+    Tree *to_return = data[1].tree;
+    printf("This elem has freq of %d ", data[1].freq);
+    if (last_elem_index > 1)
+    {
+        swap(&(data[1]), &(data[last_elem_index]));
+        --last_elem_index;
+        heapify(1);
+    } else if (last_elem_index == 1)
+        last_elem_index = 0;
+    return to_return;
+}
+
+Tree *make_tree(char val, Tree *r, Tree *l)
+{
+    Tree *to_return = malloc(sizeof(Tree));
+    to_return->r = r;
+    to_return->l = l;
+    to_return->val = val;
+    return to_return;
 }
