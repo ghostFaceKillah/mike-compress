@@ -1,3 +1,5 @@
+#define ALPHABET_SIZE 256
+
 typedef struct Tree {
     char val;
     struct Tree *l;

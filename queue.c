@@ -71,6 +71,11 @@ void init_queue(int freq[ALPHABET_SIZE])
         heapify(i);
 }
 
+int no_of_elems()
+{
+    return last_elem_index;
+}
+
 void add_elem(int freq, Tree *tree)
 {
     last_elem_index++;
@@ -83,11 +88,11 @@ void add_elem(int freq, Tree *tree)
 
 }
 
-Tree *get_top()
+void get_top(Tree **t, int *freq)
 {
     assert(last_elem_index >= 1);
-    Tree *to_return = data[1].tree;
-    printf("This elem has freq of %d ", data[1].freq);
+    *t = data[1].tree;
+    *freq = data[1].freq;
     if (last_elem_index > 1)
     {
         swap(&(data[1]), &(data[last_elem_index]));
@@ -95,7 +100,6 @@ Tree *get_top()
         heapify(1);
     } else if (last_elem_index == 1)
         last_elem_index = 0;
-    return to_return;
 }
 
 Tree *make_tree(char val, Tree *r, Tree *l)

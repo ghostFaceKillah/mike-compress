@@ -1,17 +1,22 @@
 #include <stdio.h>
 
-#include "queue.h"
+#include "huffman.h"
 
-void test_queue()
-{
-    int i;
-    Tree *top;
-    for (i = 0; i < ALPHABET_SIZE; ++i)
-    {
-        top = get_top();
-        printf("guy no. %d in the queue is %c \n", i+1, top->val);
-    }
-}
+#include <assert.h>
+
+// void test_queue()
+// {
+//     int i;
+//     Tree *top;
+//     int freq;
+//     for (i = 0; i < ALPHABET_SIZE; ++i)
+//     {
+//         get_top(&top, &freq);
+//         printf("guy no. %d in the queue is %c with freq %d \n", i+1, top->val,
+//                 freq);
+//     }
+//     assert(no_of_elems() == 0);
+// }
 
 int main()
 {
@@ -36,8 +41,8 @@ int main()
         if (freq[i])
             printf("char no. %d which is %c has freq: %d \n", i, i, freq[i]);
 
-    init_queue(freq);
-    test_queue();
+    prepare_huffman_code(freq);
+    write_result_tree();
 
     fclose(fp);
 }
