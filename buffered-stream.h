@@ -10,5 +10,5 @@ typedef struct
 
 BitStream *init_read_stream(char *file_name);
 BitStream *init_write_stream(char *file_name);
-void buffered_write(int how_much, BitStream *file);
-void buffered_read(int how_much, BitStream *file);
+void buffered_write(int how_much, BitStream *file_stream);
+void buffered_read(int how_much, BitStream *file_stream);
