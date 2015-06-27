@@ -100,7 +100,7 @@ void huffman_encode_file(BitStream *reader, BitStream *writer)
     int c;
     while ((c = fgetc(reader->fp)) != EOF)
     {
-        printf("huff enc char read. 0x%x == %c == %d \n", c, c, c);
+        // printf("huff enc char read. 0x%x == %c == %d \n", c, c, c);
         fflush(stdout);
         int how_much = char_to_symbol[c]->symbol_len;
         int what = char_to_symbol[c]->symbol_len;
@@ -119,7 +119,7 @@ void rec(Tree *t, int h)
     for (i = 0; i < h; ++i) 
         printf("\t");
     if (t->r == NULL && t->l == NULL)
-        printf("leaf: %c\n", t->val);
+        printf("leaf: as char %c as int %d as hex %x \n", t->val, t->val, t->val);
     else
         printf("node\n");
     if (t->l != NULL)

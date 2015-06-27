@@ -2,7 +2,7 @@
 
 typedef struct Tree
 {
-    char val;        // letter encoded by this node
+    unsigned char val;        // letter encoded by this node
     int symbol;      // series of 1s and 0s, binary code 
     int symbol_len;  // helps decode the above value
     struct Tree *l;
