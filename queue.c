@@ -1,4 +1,3 @@
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
@@ -13,7 +12,8 @@ void fill_one_char_entry(Data *the_place, char c, int freq)
 {
     the_place->freq = freq;
     the_place->tree = malloc(sizeof(Tree));
-    the_place->tree->l = the_place->tree->r = NULL;
+    the_place->tree->l = NULL;
+    the_place->tree->r = NULL;
     the_place->tree->val = c;
 }
 

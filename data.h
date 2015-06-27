@@ -14,9 +14,3 @@ typedef struct
     int freq;
     Tree *tree;
 } Data;
-
-typedef struct Symbol
-{
-    int symbol;
-    int symbol_len;
-}
