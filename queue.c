@@ -85,7 +85,6 @@ void add_elem(int freq, Tree *tree)
     int i;
     for (i = last_elem_index / 2; i > 0; i /= 2)
         heapify(i);
-
 }
 
 void get_top(Tree **t, int *freq)

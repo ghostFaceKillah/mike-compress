@@ -1,22 +1,7 @@
 #include <stdio.h>
 
 #include "huffman.h"
-
 #include <assert.h>
-
-// void test_queue()
-// {
-//     int i;
-//     Tree *top;
-//     int freq;
-//     for (i = 0; i < ALPHABET_SIZE; ++i)
-//     {
-//         get_top(&top, &freq);
-//         printf("guy no. %d in the queue is %c with freq %d \n", i+1, top->val,
-//                 freq);
-//     }
-//     assert(no_of_elems() == 0);
-// }
 
 int main()
 {

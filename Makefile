@@ -14,4 +14,4 @@ huffman.o: huffman.h huffman.c
 	gcc -g -c huffman.c
 
 clean:
-	rm *.o runme test-buffered-stream
+	rm *.o runme test-buffered-stream heheXD.txt

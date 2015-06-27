@@ -1,8 +1,8 @@
 #include <stdio.h>
-
 #include "huffman.h"
 
 static Tree *huffman_coding_tree = NULL;
+static Tree[ALPHABET_SIZE]; // mapping from char to symbol
 
 void prepare_huffman_code(int freq[ALPHABET_SIZE])
 {
@@ -21,6 +21,19 @@ void prepare_huffman_code(int freq[ALPHABET_SIZE])
 
 // Symbol enconde(char c);
 // char Decode(symbol c)
+//
+
+/*
+ * Encoding file
+ * =============
+ * 1) compute the tree
+ * 2) traverse the tree to prepare mapping from char to Symbol
+ * 3) write the tree representation to the file
+ */
+
+/*
+ * Decoding file
+ */
 
 void rec(Tree *t, int h)
 {
