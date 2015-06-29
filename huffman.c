@@ -69,6 +69,33 @@ void prepare_huffman_code(int freq[ALPHABET_SIZE])
     compute_visit(huffman_coding_tree);
 }
 
+Tree *read_in_rec(BitStream *reader)
+{
+    Tree *t = malloc(sizeof(Tree));
+    unsigned int node_type = buffered_read(1, reader);
+    assert(node_type == 1 || node_type == 0);
+    if (node_type == 1)
+    {
+        // im a leaf
+        // read in 8 bits, which is value of current guy
+        t->val = (unsigned char) buffered_read(8, reader);
+        t->l = t->r = 0;
+        return t;
+    } else
+    {
+        // i am a node, evaluate my children
+        t->l = read_in_rec(reader);
+        t->r = read_in_rec(reader);
+        return t;
+    }
+}
+
+void read_in_tree(BitStream *reader)
+{
+    assert(huffman_coding_tree == NULL);
+    huffman_coding_tree = read_in_rec(reader);
+}
+
 void write_visit(BitStream *writer, Tree *t)
 {
     if (t->l == NULL && t->r == NULL) 
@@ -77,20 +104,28 @@ void write_visit(BitStream *writer, Tree *t)
         buffered_write(8, writer, t->val);
     } else
     {
+    assert(t->l != NULL && t->r != NULL);
         buffered_write(1, writer, 0);
-        if (t->l != NULL)
-            write_visit(writer, t->l);
-        if (t->r != NULL)
-            write_visit(writer, t->r);
+        write_visit(writer, t->l);
+        write_visit(writer, t->r);
     }
-    // jesli jestem lisciem, to wypisz 1 oraz 8 bitowy padded kod obecnego chara
-    // w przeciwnym wypadku wypisz 0
+    // jesli jestem lisciem, to wypisz 1 oraz 8 bitowy padded kod obecnego
+    // chara, a w przeciwnym wypadku wypisz 0
 }
 
 void write_tree_to_file(BitStream *writer)
 {
     assert(huffman_coding_tree != NULL);
     write_visit(writer, huffman_coding_tree);
+}
+
+void huffman_decode_file(BitStream *reader, BitStream *writer)
+{
+ /* Decoding file
+ * =============
+ * 1) Read in the tree from the file
+ * 2) Decode bit by bit ;) writing results to the file
+ */
 }
 
 void huffman_encode_file(BitStream *reader, BitStream *writer)

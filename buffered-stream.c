@@ -69,6 +69,10 @@ unsigned int prepare_front_bitmask(int len)
 
 void buffered_write(int how_much, BitStream *file_stream, int data)
 {
+    // this is all wrong!!!!
+    // just think what happens if we want to push a lot of data
+    //  for example more than fits in the current buffer
+    //  this needs to be fixed!
     int length_of_int = 32;
     assert(how_much <= length_of_int);
     while (how_much)
@@ -77,7 +81,8 @@ void buffered_write(int how_much, BitStream *file_stream, int data)
         int space_in_buffer = 8 - file_stream->buffer_pos;
         int len = MIN(space_in_buffer, how_much);
         file_stream->buffer <<= len;
-        file_stream->buffer += prepare_bitmask(len) & data;
+        int offset = how_much - len;
+        file_stream->buffer += ((prepare_bitmask(len) << offset) & data) >> offset;
         how_much -= len;
         file_stream->buffer_pos += len;
         if (file_stream->buffer_pos == 8)
@@ -87,8 +92,6 @@ void buffered_write(int how_much, BitStream *file_stream, int data)
             file_stream->buffer_pos = 0;
             int written_chars_no = fputc(file_stream->buffer, file_stream->fp);
         }
-        // shift buffer left
-        // prepare
     }
     // file_stream;
     // write how_much bits from data to result->buffer until it is full
@@ -110,7 +113,7 @@ unsigned int buffered_read(int how_much, BitStream *file_stream)
         int len = MIN(file_stream->buffer_pos, how_much);
         result <<= len;
         result += (prepare_front_bitmask(len) & file_stream->buffer) >> (8 - len);
-        file_stream->buffer <<= len;
+        file_stream->buffer <<= len; // redundant, can be done faster, but for now it's ok
         file_stream->buffer_pos -= len;
         how_much -= len;
     }
