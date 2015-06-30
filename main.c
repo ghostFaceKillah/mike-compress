@@ -46,7 +46,7 @@ int main()
     BitStream *reader = init_read_stream("test.txt");
 
     prepare_huffman_code(freq);
-    // write_result_tree();
+    write_result_tree();
     huffman_encode_file(reader, writer);
 
     close_stream(writer);

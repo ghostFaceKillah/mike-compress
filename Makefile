@@ -4,6 +4,9 @@ main: main.c data.h queue.o huffman.o buffered-stream.o
 test-buffered-stream: test-buffered-stream.c buffered-stream.o
 	gcc -g test-buffered-stream.c buffered-stream.o -o test-buffered-stream
 
+test-decode: test-decode.c main.c data.h queue.o huffman.o buffered-stream.o
+	gcc -g -o test-decode test-decode.c queue.o huffman.o stack.o buffered-stream.o
+
 buffered-stream.o: buffered-stream.c buffered-stream.h
 	gcc -g -c buffered-stream.c
 

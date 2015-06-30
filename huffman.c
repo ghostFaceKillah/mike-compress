@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "huffman.h"
 #include "stack.h"
 
@@ -34,6 +35,7 @@ void compute_visit(Tree *t)
         t->symbol = get_stack_val();
         t->symbol_len = get_stack_len();
         char_to_symbol[t->val] = t;
+        zero_stack();
     } else
     {
         // if not, just traverse the tree
@@ -79,7 +81,8 @@ Tree *read_in_rec(BitStream *reader)
         // im a leaf
         // read in 8 bits, which is value of current guy
         t->val = (unsigned char) buffered_read(8, reader);
-        t->l = t->r = 0;
+        t->l = NULL;
+        t->r = NULL;
         return t;
     } else
     {
@@ -121,11 +124,44 @@ void write_tree_to_file(BitStream *writer)
 
 void huffman_decode_file(BitStream *reader, BitStream *writer)
 {
- /* Decoding file
- * =============
- * 1) Read in the tree from the file
- * 2) Decode bit by bit ;) writing results to the file
- */
+    /* Decoding file
+    * =============
+    * 1) Read in the tree from the file
+    * 2) Decode bit by bit ;) writing results to the file
+    */
+    read_in_tree(reader);
+    write_result_tree();
+    Tree *t = huffman_coding_tree;
+
+    while (feof(reader->fp) == 0)
+    {
+        // unsigned int bit = buffered_read(1, reader);
+        if (t->r == NULL && t->l == NULL)
+        {
+            // i'm a leaf - write my value to output file
+            buffered_write(8, writer, (unsigned int) t->val);
+            puts("i m in leaf!!!");
+            fflush(stdout);
+            t = huffman_coding_tree;
+        }
+        else if (t->r != NULL && t->l != NULL)
+        {
+            // i'm a node, read in one more char and traverse tree
+            unsigned int bit = buffered_read(1, reader);
+            assert(bit == 1 || bit == 0);
+            if (bit == 0) // go left
+                t = t->l;
+            else
+                t = t->r;
+
+            puts("im in a node!!!");
+            fflush(stdout);
+        }
+        else
+        {
+            assert((t->r != NULL || t->l != NULL) || (t->r == NULL && t->l == NULL));
+        }
+    }
 }
 
 void huffman_encode_file(BitStream *reader, BitStream *writer)
@@ -138,7 +174,7 @@ void huffman_encode_file(BitStream *reader, BitStream *writer)
         // printf("huff enc char read. 0x%x == %c == %d \n", c, c, c);
         fflush(stdout);
         int how_much = char_to_symbol[c]->symbol_len;
-        int what = char_to_symbol[c]->symbol_len;
+        int what = char_to_symbol[c]->symbol;
         buffered_write(how_much, writer, what);
     }
 }
@@ -148,8 +184,8 @@ void rec(Tree *t, int h)
 {
     // recursion used by human-format tree writer
     int i;
-    if (t->r != NULL)
-        rec(t->r, h+1);
+    if (t->l != NULL)
+        rec(t->l, h+1);
     // wypisz
     for (i = 0; i < h; ++i) 
         printf("\t");
@@ -157,8 +193,8 @@ void rec(Tree *t, int h)
         printf("leaf: as char %c as int %d as hex %x \n", t->val, t->val, t->val);
     else
         printf("node\n");
-    if (t->l != NULL)
-        rec(t->l, h+1);
+    if (t->r != NULL)
+        rec(t->r, h+1);
 }
 
 void write_result_tree()

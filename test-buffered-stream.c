@@ -6,6 +6,8 @@ int main()
     buffered_write(2, writer, 2); // 0b10
     buffered_write(2, writer, 3); // 0b11, together its 0b1011 == 0xB
 
+    buffered_write(8, writer, 0xCE);
+
     buffered_write(1, writer, 1); // 0xF
     buffered_write(1, writer, 1);
     buffered_write(1, writer, 1);
@@ -27,8 +29,8 @@ int main()
 
     close_stream(writer);
     BitStream *reader = init_read_stream("heheXD.txt");
-    printf("read %x\n", buffered_read(4, reader));
-    printf("read %x\n", buffered_read(4, reader));
+    printf("read %x\n", buffered_read(8, reader));
+
     printf("read %x\n", buffered_read(4, reader));
     printf("read %x\n", buffered_read(4, reader));
 
@@ -37,6 +39,8 @@ int main()
     printf("read %x\n", buffered_read(4, reader));
     printf("read %x\n", buffered_read(4, reader));
 
+    printf("read %x\n", buffered_read(4, reader));
+    printf("read %x\n", buffered_read(4, reader));
     printf("read %x\n", buffered_read(4, reader));
     close_stream(reader);
 }
