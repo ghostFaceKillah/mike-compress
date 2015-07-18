@@ -3,8 +3,8 @@
 typedef struct Tree
 {
     unsigned char val;        // letter encoded by this node
-    int symbol;      // series of 1s and 0s, binary code 
-    int symbol_len;  // helps decode the above value
+    unsigned int symbol;      // series of 1s and 0s, binary code 
+    unsigned int symbol_len;  // helps decode the above value
     struct Tree *l;
     struct Tree *r;
 } Tree;

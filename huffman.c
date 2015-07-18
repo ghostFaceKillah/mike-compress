@@ -34,8 +34,10 @@ void compute_visit(Tree *t)
         // i am a leaf = fill in symbol data and the reverse map
         t->symbol = get_stack_val();
         t->symbol_len = get_stack_len();
+        #ifdef DEBUG
+        printf("Preparing tree. Current char is %c, its symbol is %u, and has length of %u\n", t->val, t->symbol, t->symbol_len);
+        #endif
         char_to_symbol[t->val] = t;
-        zero_stack();
     } else
     {
         // if not, just traverse the tree
@@ -124,24 +126,31 @@ void write_tree_to_file(BitStream *writer)
 
 void huffman_decode_file(BitStream *reader, BitStream *writer)
 {
+    // I've figured out the bug. 
+    // Sometimes it happens randomly that we write
+
     /* Decoding file
     * =============
     * 1) Read in the tree from the file
     * 2) Decode bit by bit ;) writing results to the file
     */
     read_in_tree(reader);
+#ifdef DEBUG
     write_result_tree();
+#endif
     Tree *t = huffman_coding_tree;
 
-    while (feof(reader->fp) == 0)
+    while (feof(reader->fp) == 0) // this is wrong. I should fix it somehow
     {
         // unsigned int bit = buffered_read(1, reader);
         if (t->r == NULL && t->l == NULL)
         {
             // i'm a leaf - write my value to output file
             buffered_write(8, writer, (unsigned int) t->val);
+            #ifdef DEBUG
             puts("i m in leaf!!!");
             fflush(stdout);
+            #endif
             t = huffman_coding_tree;
         }
         else if (t->r != NULL && t->l != NULL)
@@ -154,8 +163,10 @@ void huffman_decode_file(BitStream *reader, BitStream *writer)
             else
                 t = t->r;
 
+            #ifdef DEBUG
             puts("im in a node!!!");
             fflush(stdout);
+            #endif
         }
         else
         {
@@ -171,10 +182,13 @@ void huffman_encode_file(BitStream *reader, BitStream *writer)
     int c;
     while ((c = fgetc(reader->fp)) != EOF)
     {
-        // printf("huff enc char read. 0x%x == %c == %d \n", c, c, c);
-        fflush(stdout);
         int how_much = char_to_symbol[c]->symbol_len;
         int what = char_to_symbol[c]->symbol;
+        #ifdef DEBUG
+        printf("huff enc char read. 0x%x == %c == %d \n", c, c, c);
+        fflush(stdout);
+        printf("translatin dis to %x, in int %d, which is of len %d\n", what, what, how_much);
+        #endif
         buffered_write(how_much, writer, what);
     }
 }
@@ -184,8 +198,8 @@ void rec(Tree *t, int h)
 {
     // recursion used by human-format tree writer
     int i;
-    if (t->l != NULL)
-        rec(t->l, h+1);
+    if (t->r != NULL)
+        rec(t->r, h+1);
     // wypisz
     for (i = 0; i < h; ++i) 
         printf("\t");
@@ -193,8 +207,8 @@ void rec(Tree *t, int h)
         printf("leaf: as char %c as int %d as hex %x \n", t->val, t->val, t->val);
     else
         printf("node\n");
-    if (t->r != NULL)
-        rec(t->r, h+1);
+    if (t->l != NULL)
+        rec(t->l, h+1);
 }
 
 void write_result_tree()

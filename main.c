@@ -10,23 +10,10 @@ int main()
     int c;
     int freq[ALPHABET_SIZE] = {0};
 
+    // read in data and collect frequencies - to be moved deeper into code
     fp = fopen("test.txt", "r");
-
-    // read in data and collect frequencies
     while ((c = fgetc(fp)) != EOF)
-    {
-        /*
-        printf("0x%x == %c == %d \n", c, c, c);
-        if (c == 0xe2)
-        {
-            if (ferror(fp))
-                puts("EROROROROOROROROOROROROOR");
-            fflush(stdout);
-        } 
-        */
         freq[c]++;
-    }
-
     fclose(fp);
 
     // make a queue
@@ -46,7 +33,9 @@ int main()
     BitStream *reader = init_read_stream("test.txt");
 
     prepare_huffman_code(freq);
+    #ifdef DEBUG
     write_result_tree();
+    #endif
     huffman_encode_file(reader, writer);
 
     close_stream(writer);

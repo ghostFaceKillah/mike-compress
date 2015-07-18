@@ -4,6 +4,7 @@ typedef struct
 {
     FILE *fp;
     char buffer;
+    int is_eof;
     int buffer_pos;
     int buff_type;
 } BitStream;

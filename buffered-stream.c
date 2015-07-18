@@ -14,6 +14,7 @@ BitStream *init_read_stream(char *file_name)
     result->buffer = 0;
     result->buff_type = READ;
     result->buffer_pos = 0;
+    result->is_eof = 0;
     return result;
 }
 
@@ -107,7 +108,8 @@ unsigned int buffered_read(int how_much, BitStream *file_stream)
         if (file_stream->buffer_pos == 0)
         {
             // read in one char from file
-            file_stream->buffer = (char) fgetc(file_stream->fp);
+            if ((file_stream->buffer = (char) fgetc(file_stream->fp)) == EOF)
+                file_stream->is_eof = 1;
             file_stream->buffer_pos = 8;
         }
         int len = MIN(file_stream->buffer_pos, how_much);
